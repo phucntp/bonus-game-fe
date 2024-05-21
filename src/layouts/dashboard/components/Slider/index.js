@@ -31,7 +31,6 @@ function Slider() {
 
   const fetchData = useCallback(async () => {
     const res = await fetch("http://localhost:2000/api/user");
-    console.log(res, "res");
   }, []);
 
   useEffect(() => {

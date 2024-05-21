@@ -43,7 +43,7 @@ const ModalEdit = ({ visible, handleClose, handleEdit, member }) => {
               Số hiệu tài khoản
             </ArgonTypography>
             <ArgonInput
-              value={member?.code}
+              value={itemSelected?.code}
               onChange={(v) => handleChangeValue("code", v.target.value)}
               size="large"
             />
@@ -53,7 +53,7 @@ const ModalEdit = ({ visible, handleClose, handleEdit, member }) => {
               Số Tiền Cược/Đặt Cọc Hiệu Quả
             </ArgonTypography>
             <ArgonInput
-              value={member?.betAmount}
+              value={itemSelected?.betAmount}
               onChange={(v) => handleChangeValue("betAmount", v.target.value)}
               size="large"
               type="number"
@@ -64,7 +64,7 @@ const ModalEdit = ({ visible, handleClose, handleEdit, member }) => {
               Số lần tham gia
             </ArgonTypography>
             <ArgonInput
-              value={member?.betAmount}
+              value={itemSelected?.timesJoin}
               onChange={(v) => handleChangeValue("timesJoin", v.target.value)}
               size="large"
               type="number"
@@ -75,7 +75,7 @@ const ModalEdit = ({ visible, handleClose, handleEdit, member }) => {
               Số lần còn lại
             </ArgonTypography>
             <ArgonInput
-              value={member?.betAmount}
+              value={itemSelected?.timesRest}
               onChange={(v) => handleChangeValue("timesRest", v.target.value)}
               size="large"
               type="number"

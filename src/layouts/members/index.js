@@ -36,6 +36,8 @@ function Members() {
     try {
       if (compact(ids)?.length)
         await api.post("member/remove-members", { data: { ids: compact(ids) } });
+
+      await fetchData();
     } catch (error) {}
   }, []);
 
@@ -60,6 +62,18 @@ function Members() {
   const handleEdit = useCallback(async (newMember) => {
     try {
       await api.put(`member/${newMember._id}`, { data: newMember });
+      handleClose();
+      await fetchData();
+    } catch (error) {}
+  }, []);
+
+  const handleImport = useCallback(async (dataImport) => {
+    try {
+      if (dataImport?.length) {
+        await api.post(`member/upload-excel`, { data: dataImport });
+        handleCloseExcel();
+        await fetchData();
+      }
     } catch (error) {}
   }, []);
 
@@ -158,7 +172,11 @@ function Members() {
         handleEdit={handleEdit}
         handleClose={handleClose}
       />
-      <ModalExcel visible={visibleExcel} handleClose={handleCloseExcel} />
+      <ModalExcel
+        visible={visibleExcel}
+        handleClose={handleCloseExcel}
+        handleImport={handleImport}
+      />
     </DashboardLayout>
   );
 }

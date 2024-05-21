@@ -28,8 +28,8 @@ function Author({ image, name, email }) {
 const authorsTableData = (data, handleDelete, handleOpenEdit) => ({
   columns: [
     { title: "ID", align: "center", name: "id" },
-    { title: "Số thành viên", align: "left", name: "code" },
-    { title: "Số tiền cược/Đặt cọc hiểu quả", name: "betAmount", align: "left" },
+    { title: "Mã thành viên", align: "left", name: "code" },
+    { title: "Số tiền cược/Đặt cọc hiệu quả", name: "betAmount", align: "left" },
     { title: "Tổng số lần tham gia", name: "timesJoin", align: "left" },
     { title: "Số lần còn lại", align: "left", name: "timesRest" },
     { title: "IP Đăng nhập", align: "left", name: "ip" },
