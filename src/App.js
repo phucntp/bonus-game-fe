@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 // react-router components
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -48,6 +48,16 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+  const userLogin = sessionStorage.getItem("userLogin");
+  const dataUser = userLogin ? JSON.parse(userLogin) : "";
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!dataUser?.accessToken) {
+      navigate("/authentication/sign-in");
+    }
+  }, []);
 
   // Cache for the rtl
   useMemo(() => {
@@ -127,7 +137,7 @@ export default function App() {
         {layout === "vr" && <Configurator />}
         <Routes>
           {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Navigate to={dataUser?.accessToken ? "/dashboard" : "/authentication/sign-in"} />
         </Routes>
       </ThemeProvider>
     </CacheProvider>
@@ -149,7 +159,11 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        {dataUser?.accessToken ? (
+          <Route path="*" element={<Navigate to={"/dashboard"} />} />
+        ) : (
+          <Route path="*" element={<Navigate to={"/authentication/sign-in"} />} />
+        )}
       </Routes>
     </ThemeProvider>
   );

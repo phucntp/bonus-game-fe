@@ -14,7 +14,7 @@ Coded by www.creative-tim.com
 */
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -30,70 +30,71 @@ import ArgonButton from "components/ArgonButton";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 import Socials from "layouts/authentication/components/Socials";
 import Separator from "layouts/authentication/components/Separator";
+import { useCallback, useState } from "react";
+import api from "layouts/axios";
 
 // Images
 const bgImage =
   "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signup-cover.jpg";
 
 function Cover() {
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+
+  const handelRegister = useCallback(async () => {
+    if (password && name) {
+      try {
+        const res = await api.post("user", { data: { name, password, email } });
+        if (res.data) {
+          navigate("/authentication/sign-in");
+        }
+      } catch (error) {}
+    }
+  }, [password, name]);
+
   return (
-    <CoverLayout
-      title="Welcome!"
-      description="Use these awesome forms to login or create new account in your project for free."
-      image={bgImage}
-      imgPosition="top"
-      button={{ color: "dark", variant: "gradient" }}
-    >
+    <CoverLayout image={bgImage} imgPosition="top" button={{ color: "dark", variant: "gradient" }}>
       <Card>
-        <ArgonBox p={3} mb={1} textAlign="center">
-          <ArgonTypography variant="h5" fontWeight="medium">
-            Register with
-          </ArgonTypography>
-        </ArgonBox>
-        <ArgonBox mb={2}>
-          <Socials />
-        </ArgonBox>
-        <ArgonBox px={12}>
-          <Separator />
-        </ArgonBox>
         <ArgonBox pt={2} pb={3} px={3}>
           <ArgonBox component="form" role="form">
             <ArgonBox mb={2}>
-              <ArgonInput placeholder="Name" />
+              <ArgonInput
+                placeholder="Name"
+                value={name}
+                onChange={(v) => setName(v.target.value)}
+              />
             </ArgonBox>
             <ArgonBox mb={2}>
-              <ArgonInput type="email" placeholder="Email" />
+              <ArgonInput
+                value={email}
+                onChange={(v) => setEmail(v.target.value)}
+                type="email"
+                placeholder="Email"
+              />
             </ArgonBox>
             <ArgonBox mb={2}>
-              <ArgonInput type="password" placeholder="Password" />
-            </ArgonBox>
-            <ArgonBox display="flex" alignItems="center">
-              <Checkbox defaultChecked />
-              <ArgonTypography
-                variant="button"
-                fontWeight="regular"
-                sx={{ cursor: "pointer", userSelect: "none" }}
-              >
-                &nbsp;&nbsp;I agree the&nbsp;
-              </ArgonTypography>
-              <ArgonTypography
-                component="a"
-                href="#"
-                variant="button"
-                fontWeight="bold"
-                textGradient
-              >
-                Terms and Conditions
-              </ArgonTypography>
+              <ArgonInput
+                value={password}
+                onChange={(v) => setPassword(v.target.value)}
+                type="password"
+                placeholder="Password"
+              />
             </ArgonBox>
             <ArgonBox mt={4} mb={1}>
-              <ArgonButton variant="gradient" color="dark" fullWidth>
-                sign up
+              <ArgonButton
+                onClick={() => handelRegister()}
+                variant="gradient"
+                color="dark"
+                fullWidth
+              >
+                Đăng ký
               </ArgonButton>
             </ArgonBox>
             <ArgonBox mt={2}>
               <ArgonTypography variant="button" color="text" fontWeight="regular">
-                Already have an account?&nbsp;
+                Bạn đã có tài khoản?&nbsp;
                 <ArgonTypography
                   component={Link}
                   to="/authentication/sign-in"
@@ -102,7 +103,7 @@ function Cover() {
                   fontWeight="bold"
                   textGradient
                 >
-                  Sign in
+                  Đăng nhập
                 </ArgonTypography>
               </ArgonTypography>
             </ArgonBox>

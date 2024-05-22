@@ -7,36 +7,69 @@ import ArgonTypography from "components/ArgonTypography";
 // Argon Dashboard 2 MUI examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Table from "examples/Tables/Table";
 import api from "layouts/axios";
-import { compact } from "lodash";
 
 // Data
-import authorsTableData from "layouts/bonus/data/authorsTableData";
 import { useCallback, useEffect, useState } from "react";
 import { Box, Button } from "@mui/material";
 import ArgonInput from "components/ArgonInput";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
 
 function SettingDate() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState();
 
   const fetchData = useCallback(async () => {
-    const res = await api.get("bonus");
-    setData(res.data?.data || []);
+    const res = await api.get("date-price");
+    const convertDate = {
+      ...res.data?.data?.[0],
+      sumStart: res.data?.data?.[0]?.sumStart
+        ? dayjs(res.data?.data?.[0]?.sumStart).format("HH:mm")
+        : "",
+      sumEnd: res.data?.data?.[0]?.sumEnd ? dayjs(res.data?.data?.[0]?.sumEnd).format("HH:mm") : "",
+      dailyStart: res.data?.data?.[0]?.dailyStart
+        ? dayjs(res.data?.data?.[0]?.dailyStart).format("HH:mm")
+        : "",
+      dailyEnd: res.data?.data?.[0]?.dailyEnd
+        ? dayjs(res.data?.data?.[0]?.dailyEnd).format("HH:mm")
+        : "",
+    };
+    setData(convertDate || {});
   }, []);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  const handleDelete = useCallback(async (ids) => {
-    try {
-      if (compact(ids)?.length)
-        await api.post("bonus/remove-members", { data: { ids: compact(ids) } });
-    } catch (error) {}
+  const handleChangeValue = useCallback((key, value) => {
+    setData((prev) => ({ ...prev, [key]: value }));
   }, []);
 
-  const { columns, rows } = authorsTableData(data, handleDelete);
+  const handleEdit = useCallback(
+    async (newDate) => {
+      try {
+        const convertDate = {
+          ...newDate,
+          sumStart: newDate?.sumStart ? dayjs(newDate?.sumStart, "HH:mm").toISOString() : "",
+          sumEnd: newDate?.sumEnd ? dayjs(newDate?.sumEnd, "HH:mm").toISOString() : "",
+          dailyStart: newDate?.dailyStart ? dayjs(newDate?.dailyStart, "HH:mm").toISOString() : "",
+          dailyEnd: newDate?.dailyEnd ? dayjs(newDate?.dailyEnd, "HH:mm").toISOString() : "",
+        };
+        if (newDate._id) {
+          await api.put(`date-price/${newDate._id}`, { data: convertDate });
+          await fetchData();
+        } else {
+          await api.post(`date-price`, { data: convertDate });
+          await fetchData();
+        }
+      } catch (error) {
+        console.log(error, "err");
+      }
+    },
+    [fetchData]
+  );
 
   return (
     <DashboardLayout>
@@ -46,9 +79,7 @@ function SettingDate() {
           <Card>
             <Box
               style={{
-                width: "450px",
                 backgroundColor: "#ffffff",
-                // height: "460px",
                 padding: "15px",
                 fontSize: "12px",
               }}
@@ -60,9 +91,10 @@ function SettingDate() {
                     Thời gian bắt đầu tổng cộng
                   </ArgonTypography>
                   <ArgonInput
-                    onChange={(v) => handleChangeValue("betAmount", v.target.value)}
+                    onChange={(v) => handleChangeValue("sumStart", v.target.value)}
                     size="large"
-                    type="date"
+                    type="time"
+                    value={data?.sumStart}
                   />
                 </ArgonBox>
                 <ArgonBox mb={2}>
@@ -70,9 +102,10 @@ function SettingDate() {
                     Thời gian kết thúc tổng cộng
                   </ArgonTypography>
                   <ArgonInput
-                    onChange={(v) => handleChangeValue("timesJoin", v.target.value)}
+                    onChange={(v) => handleChangeValue("sumEnd", v.target.value)}
                     size="large"
-                    type="date"
+                    type="time"
+                    value={data?.sumEnd}
                   />
                 </ArgonBox>
                 <ArgonBox mb={2}>
@@ -80,9 +113,10 @@ function SettingDate() {
                     Thời gian bắt đầu hàng ngày
                   </ArgonTypography>
                   <ArgonInput
-                    onChange={(v) => handleChangeValue("timesRest", v.target.value)}
+                    onChange={(v) => handleChangeValue("dailyStart", v.target.value)}
                     size="large"
-                    type="date"
+                    type="time"
+                    value={data?.dailyStart}
                   />
                 </ArgonBox>
                 <ArgonBox mb={2}>
@@ -90,9 +124,10 @@ function SettingDate() {
                     Thời gian kết thúc hàng ngày
                   </ArgonTypography>
                   <ArgonInput
-                    onChange={(v) => handleChangeValue("timesRest", v.target.value)}
+                    onChange={(v) => handleChangeValue("dailyEnd", v.target.value)}
                     size="large"
-                    type="date"
+                    type="time"
+                    value={data?.dailyEnd}
                   />
                 </ArgonBox>
                 <Box
@@ -101,7 +136,7 @@ function SettingDate() {
                     justifyContent: "end",
                   }}
                 >
-                  <Button style={{ border: "1px solid" }} onClick={() => handleEdit(itemSelected)}>
+                  <Button style={{ border: "1px solid" }} onClick={() => handleEdit(data)}>
                     Cập nhật
                   </Button>
                 </Box>

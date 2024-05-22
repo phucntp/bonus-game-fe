@@ -116,7 +116,7 @@ const routes = [
   ,
   {
     type: "route",
-    name: "Sign Up",
+    name: "Đăng ký",
     key: "sign-up",
     route: "/authentication/sign-up",
     icon: <ArgonBox component="i" color="info" fontSize="14px" className="ni ni-collection" />,

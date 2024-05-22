@@ -15,10 +15,15 @@ const ModalEdit = ({ visible, handleClose, handleEdit, member }) => {
     setItemSelected(member);
   }, [member]);
 
+  const closeModal = useCallback(() => {
+    handleClose();
+    setItemSelected(undefined);
+  }, []);
+
   return (
     <Modal
       open={visible}
-      onClose={handleClose}
+      onClose={closeModal}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       style={{

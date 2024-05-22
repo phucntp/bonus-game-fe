@@ -5,7 +5,7 @@ import ArgonInput from "components/ArgonInput";
 import ArgonTypography from "components/ArgonTypography";
 import React, { useCallback, useEffect, useState } from "react";
 
-const ModalEdit = ({ visible, handleClose, handleEdit, member }) => {
+const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
   const [itemSelected, setItemSelected] = useState();
 
   const handleChangeValue = useCallback((key, value) => {
@@ -13,13 +13,18 @@ const ModalEdit = ({ visible, handleClose, handleEdit, member }) => {
   }, []);
 
   useEffect(() => {
-    setItemSelected(member);
-  }, [member]);
+    setItemSelected(prize);
+  }, [prize]);
+
+  const closeModal = useCallback(() => {
+    handleClose();
+    setItemSelected(undefined);
+  }, []);
 
   return (
     <Modal
       open={visible}
-      onClose={handleClose}
+      onClose={closeModal}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       style={{
@@ -44,7 +49,7 @@ const ModalEdit = ({ visible, handleClose, handleEdit, member }) => {
               Tên giải thưởng
             </ArgonTypography>
             <ArgonInput
-              value={member?.code}
+              value={itemSelected?.name}
               onChange={(v) => handleChangeValue("name", v.target.value)}
               size="large"
             />
@@ -54,8 +59,8 @@ const ModalEdit = ({ visible, handleClose, handleEdit, member }) => {
               Số tiền thưởng
             </ArgonTypography>
             <ArgonInput
-              value={member?.betAmount}
-              onChange={(v) => handleChangeValue("betAmount", v.target.value)}
+              value={itemSelected?.numberBonus}
+              onChange={(v) => handleChangeValue("numberBonus", v.target.value)}
               size="large"
               type="number"
             />
@@ -65,8 +70,8 @@ const ModalEdit = ({ visible, handleClose, handleEdit, member }) => {
               Tỷ lệ chiến thắng (%)
             </ArgonTypography>
             <ArgonInput
-              value={member?.betAmount}
-              onChange={(v) => handleChangeValue("timesJoin", v.target.value)}
+              value={itemSelected?.percentWin}
+              onChange={(v) => handleChangeValue("percentWin", v.target.value)}
               placeholder="Số lần tham gia"
               size="large"
               type="number"
@@ -77,7 +82,7 @@ const ModalEdit = ({ visible, handleClose, handleEdit, member }) => {
               Số thứ tự
             </ArgonTypography>
             <ArgonInput
-              value={member?.betAmount}
+              value={itemSelected?.order}
               onChange={(v) => handleChangeValue("order", v.target.value)}
               size="large"
               type="number"

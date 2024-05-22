@@ -20,11 +20,15 @@ import { Button } from "@mui/material";
 function Prizes() {
   const [data, setData] = useState([]);
   const [visibleEdit, setVisibleEdit] = useState(false);
-  const [memberSelected, setMemberSelected] = useState();
+  const [prizeSelected, setPrizeSelected] = useState();
 
   const fetchData = useCallback(async () => {
     const res = await api.get("prize");
-    setData(res.data?.data || []);
+    if (res.data?.data?.length) {
+      setData(res.data?.data?.sort((a, b) => a.order - b.order));
+    } else {
+      setData([]);
+    }
   }, []);
 
   useEffect(() => {
@@ -33,29 +37,37 @@ function Prizes() {
 
   const handleDelete = useCallback(async (ids) => {
     try {
-      if (compact(ids)?.length) await api.post("price", { data: { ids: compact(ids) } });
+      if (compact(ids)?.length)
+        await api.post("prize/remove-prizes", { data: { ids: compact(ids) } });
+      fetchData();
     } catch (error) {}
   }, []);
 
   const handleOpenEdit = useCallback((member) => {
-    setMemberSelected(member);
+    setPrizeSelected(member);
     setVisibleEdit(true);
   }, []);
 
   const handleClose = useCallback(() => {
     setVisibleEdit(false);
-    setMemberSelected(undefined);
+    setPrizeSelected(undefined);
   }, []);
 
-  const handleEdit = useCallback(async (newMember) => {
-    try {
-      if (newMember) {
-        await api.put(`prize/${newMember._id}`, { data: newMember });
-      } else {
-        await api.post(`prize`, { data: newMember });
-      }
-    } catch (error) {}
-  }, []);
+  const handleEdit = useCallback(
+    async (newMember) => {
+      try {
+        if (newMember._id) {
+          await api.put(`prize/${newMember._id}`, { data: newMember });
+          await fetchData();
+        } else {
+          await api.post(`prize`, { data: newMember });
+          await fetchData();
+        }
+        handleClose();
+      } catch (error) {}
+    },
+    [fetchData]
+  );
 
   const { columns, rows } = authorsTableData(data, handleDelete, handleOpenEdit);
 
@@ -86,7 +98,7 @@ function Prizes() {
       </ArgonBox>
       <ModalEdit
         visible={visibleEdit}
-        member={memberSelected}
+        prize={prizeSelected}
         handleEdit={handleEdit}
         handleClose={handleClose}
       />

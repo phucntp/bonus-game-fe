@@ -74,10 +74,15 @@ const ModalExcel = ({ visible, handleClose, handleImport }) => {
     writeFile(wb, fileName);
   }, []);
 
+  const closeModal = useCallback(() => {
+    handleClose();
+    setData(undefined);
+  }, []);
+
   return (
     <Modal
       open={visible}
-      onClose={handleClose}
+      onClose={closeModal}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       style={{

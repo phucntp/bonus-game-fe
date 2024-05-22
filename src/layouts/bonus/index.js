@@ -43,7 +43,7 @@ function Bonuses() {
         <ArgonBox mb={3}>
           <Card>
             <ArgonBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <ArgonTypography variant="h6">Danh sách giải thưởng</ArgonTypography>
+              <ArgonTypography variant="h6">Danh sách phát thưởng</ArgonTypography>
             </ArgonBox>
             <ArgonBox
               sx={{
