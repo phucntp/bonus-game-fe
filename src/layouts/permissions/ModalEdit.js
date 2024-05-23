@@ -70,8 +70,8 @@ const ModalEdit = ({ visible, handleClose, handleEdit, member, users }) => {
     onChange={(v) => handleChangeValue('permissions', v)}
     multiple
   >
-    {(users || []).map((user) => {
-      return (<MenuItem value={user._id}>{user.name || ''}</MenuItem>)
+    {['Admin, User'].map((user) => {
+      return (<MenuItem value={user}>{user || ''}</MenuItem>)
     })}
   </Select>
 </FormControl>
