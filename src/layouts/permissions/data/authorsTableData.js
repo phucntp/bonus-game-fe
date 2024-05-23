@@ -8,9 +8,6 @@ import team2 from "assets/images/team-2.jpg";
 function Author({ image, name, email }) {
   return (
     <ArgonBox display="flex" alignItems="center" px={1} py={0.5}>
-      {/* <ArgonBox mr={2}>
-        <ArgonAvatar src={image} alt={name} size="sm" variant="rounded" />
-      </ArgonBox> */}
       <ArgonBox display="flex" flexDirection="column">
         <ArgonTypography variant="button" fontWeight="medium">
           {name}
@@ -26,18 +23,13 @@ function Author({ image, name, email }) {
 const authorsTableData = (data, handleDelete) => ({
   columns: [
     { title: "ID", align: "center", name: "id" },
-    { title: "Số thành viên", align: "left", name: "numberMember" },
-    { title: "Số tiền thưởng", align: "left", name: "numberBonus" },
-    { title: "Đã gửi chưa?", name: "sent", align: "left" },
-    { title: "Ip", name: "ip", align: "left" },
-    { title: "Thời gian trúng giải", align: "left", name: "date" },
-    { title: "Người thực hiện thao tác", align: "left", name: "implementer" },
-    { title: "action", align: "center", name: "action" },
+    { title: "Tài khoảnh", align: "left", name: "user" },
+    { title: "Quyền", align: "left", name: "permissions" },
   ],
 
   rows: data.map((dt, index) => {
     return {
-      implementer: (
+      user: (
         <Author
           image={team2}
           name={dt.implementer?.name || ""}
@@ -49,29 +41,9 @@ const authorsTableData = (data, handleDelete) => ({
           {index + 1}
         </ArgonTypography>
       ),
-      numberMember: (
+      permissions: (
         <ArgonTypography variant="caption" color="secondary" fontWeight="medium">
-          {dt.numberMember}
-        </ArgonTypography>
-      ),
-      numberBonus: (
-        <ArgonTypography variant="caption" color="secondary" fontWeight="medium">
-          {dt.numberBonus}
-        </ArgonTypography>
-      ),
-      sent: (
-        <ArgonTypography variant="caption" color="secondary" fontWeight="medium">
-          {dt.sent ? "Đã gửi" : "Chưa gửi"}
-        </ArgonTypography>
-      ),
-      ip: (
-        <ArgonTypography variant="caption" color="secondary" fontWeight="medium">
-          {dt.ip}
-        </ArgonTypography>
-      ),
-      date: (
-        <ArgonTypography variant="caption" color="secondary" fontWeight="medium">
-          {dt.date ? dayjs(dt.date).format("DD/MM/YYYY HH:mm") : ""}
+          {dt.permissions?.join(', ')}
         </ArgonTypography>
       ),
       action: (

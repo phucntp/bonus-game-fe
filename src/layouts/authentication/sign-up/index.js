@@ -28,8 +28,6 @@ import ArgonButton from "components/ArgonButton";
 
 // Authentication layout components
 import CoverLayout from "layouts/authentication/components/CoverLayout";
-import Socials from "layouts/authentication/components/Socials";
-import Separator from "layouts/authentication/components/Separator";
 import { useCallback, useState } from "react";
 import api from "layouts/axios";
 import AutoCloseMessage from "examples/AutoMessage";
@@ -44,20 +42,30 @@ function Cover() {
   const [email, setEmail] = useState("");
   const [visibleMessage, setVisibleMessage] = useState(false);
   const [message, setMessage] = useState(false);
-  const navigate = useNavigate();
+  const [isError, setIsError] = useState(false)
+
+  const handleVisibleAlert = useCallback((message) => {
+    setVisibleMessage(true)
+    setMessage(message);
+  }, [])
 
   const handelRegister = useCallback(async () => {
     if (password && name) {
       try {
         const res = await api.post("user", { data: { name, password, email } });
-        setVisibleMessage(true);
-        setMessage("Đăng ký thành công. Vui lòng đăng nhập lại");
+        handleVisibleAlert("Đăng ký thành công. Vui lòng đăng nhập lại")
       } catch (error) {
-        setMessage("Đăng ký thất bại.Vui lòng kiểm tra lại thông tin");
-        setVisibleMessage(true);
+        handleVisibleAlert("Đăng ký thất bại.Vui lòng kiểm tra lại thông tin")
+        setIsError(true)
       }
+    } else if(!name) {
+      handleVisibleAlert("Vui lòng nhập tên!")
+      setIsError(true)
+    } else if(!password) {
+      handleVisibleAlert("Vui lòng nhập mật khẩu!")
+      setIsError(true)
     }
-  }, [password, name]);
+  }, [password, name, handleVisibleAlert]);
 
   return (
     <CoverLayout image={bgImage} imgPosition="top" button={{ color: "dark", variant: "gradient" }}>
@@ -118,6 +126,7 @@ function Cover() {
           message={message}
           visible={visibleMessage}
           setVisible={setVisibleMessage}
+          status={!!isError && "error"}
         />
       </Card>
     </CoverLayout>

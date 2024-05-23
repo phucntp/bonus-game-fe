@@ -21,13 +21,29 @@ function Prizes() {
   const [data, setData] = useState([]);
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [prizeSelected, setPrizeSelected] = useState();
+  const [visibleMessage, setVisibleMessage] = useState(false);
+  const [message, setMessage] = useState(false);
+  const [isError, setIsError] = useState(false)
+
+  const handleVisibleAlert = useCallback((message, error) => {
+    setVisibleMessage(true)
+    setMessage(message);
+    if(error) {
+      setIsError(true)
+    }
+  }, [])
+
 
   const fetchData = useCallback(async () => {
-    const res = await api.get("prize");
+    try {
+      const res = await api.get("prize");
     if (res.data?.data?.length) {
       setData(res.data?.data?.sort((a, b) => a.order - b.order));
     } else {
       setData([]);
+    }
+    } catch (error) {
+      handleVisibleAlert("Có lỗi xảy ra!", true)
     }
   }, []);
 
@@ -40,7 +56,10 @@ function Prizes() {
       if (compact(ids)?.length)
         await api.post("prize/remove-prizes", { data: { ids: compact(ids) } });
       fetchData();
-    } catch (error) {}
+      handleVisibleAlert("Xóa thành công")
+    } catch (error) {
+      handleVisibleAlert("Có lỗi xảy ra!", true)
+    }
   }, []);
 
   const handleOpenEdit = useCallback((member) => {
@@ -64,7 +83,10 @@ function Prizes() {
           await fetchData();
         }
         handleClose();
-      } catch (error) {}
+        handleVisibleAlert("Cập nhật thành công")
+      } catch (error) {
+        handleVisibleAlert("Có lỗi xảy ra!", true)
+      }
     },
     [fetchData]
   );
@@ -78,7 +100,7 @@ function Prizes() {
         <ArgonBox mb={3}>
           <Card>
             <ArgonBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <ArgonTypography variant="h6">Danh sách thành viên</ArgonTypography>
+              <ArgonTypography variant="h6">Danh sách giải thưởng</ArgonTypography>
               <Button onClick={() => setVisibleEdit(true)}>Thêm giải thưởng</Button>
             </ArgonBox>
             <ArgonBox
@@ -102,6 +124,12 @@ function Prizes() {
         handleEdit={handleEdit}
         handleClose={handleClose}
       />
+      <AutoCloseMessage
+          message={message}
+          visible={visibleMessage}
+          setVisible={setVisibleMessage}
+          status={!!isError && "error"}
+        />
     </DashboardLayout>
   );
 }

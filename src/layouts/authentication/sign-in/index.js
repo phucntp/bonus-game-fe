@@ -23,24 +23,38 @@ function Illustration() {
   const [name, setName] = useState("");
   const [visibleMessage, setVisibleMessage] = useState(false);
   const [message, setMessage] = useState(false);
+  const [isError, setIsError] = useState(false)
 
   const navigate = useNavigate();
+
+  const handleVisibleAlert = useCallback((message) => {
+    setVisibleMessage(true)
+    setMessage(message);
+  }, [])
 
   const handelLogin = useCallback(async () => {
     if (password && name) {
       try {
         const res = await api.post("login", { data: { name, password } });
         if (res.data) {
-          setVisibleMessage(true);
-          setMessage("Đăng nhập thành công.");
+          handleVisibleAlert("Đăng nhập thành công.");
           sessionStorage.setItem("userLogin", JSON.stringify(res.data));
           setTimeout(() => {
             navigate("/dashboard");
           }, 2000);
         }
-      } catch (error) {}
+      } catch (error) {
+        handleVisibleAlert("Đăng nhập thất vại. Vui lòng kiểm tra lại thông tin");
+        setIsError(true)
+      } 
+    } else if(!name) {
+      handleVisibleAlert("Vui lòng nhập tên!")
+      setIsError(true)
+    } else if(!password) {
+      handleVisibleAlert("Vui lòng nhập mật khẩu!")
+      setIsError(true)
     }
-  }, [password, name]);
+  }, [password, name, handleVisibleAlert]);
   return (
     <IllustrationLayout title="Đăng nhập" description="Hãy nhập tên và mật khẩu để đăng nhập">
       <ArgonBox component="form" role="form">
@@ -84,6 +98,7 @@ function Illustration() {
           message={message}
           visible={visibleMessage}
           setVisible={setVisibleMessage}
+          status={!!isError && "error"}
         />
       </ArgonBox>
     </IllustrationLayout>

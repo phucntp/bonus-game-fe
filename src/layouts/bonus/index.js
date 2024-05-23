@@ -17,6 +17,11 @@ import { useCallback, useEffect, useState } from "react";
 
 function Bonuses() {
   const [data, setData] = useState([]);
+  const [valueTab, setValueTab] = React.useState(0);
+
+  const handleChangeTab = (event, newValue) => {
+    setValueTab(newValue);
+  };
 
   const fetchData = useCallback(async () => {
     const res = await api.get("bonus");
@@ -43,7 +48,7 @@ function Bonuses() {
         <ArgonBox mb={3}>
           <Card>
             <ArgonBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <ArgonTypography variant="h6">Danh sách phát thưởng</ArgonTypography>
+              <ArgonTypography variant="h6">Danh sách trả thưởng</ArgonTypography>
             </ArgonBox>
             <ArgonBox
               sx={{
@@ -55,7 +60,18 @@ function Bonuses() {
                 },
               }}
             >
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={valueTab} onChange={handleChangeTab} aria-label="basic tabs example">
+                  <Tab label="Đã trả" {...a11yProps(0)} />
+                  <Tab label="Chưa trả" {...a11yProps(1)} />
+                </Tabs>
+              </Box>
+              <CustomTabPanel value={valueTab} index={0}>
               <Table columns={columns} rows={rows} />
+              </CustomTabPanel>
+              <CustomTabPanel value={valueTab} index={1}>
+              <Table columns={columns} rows={rows} />
+              </CustomTabPanel>
             </ArgonBox>
           </Card>
         </ArgonBox>

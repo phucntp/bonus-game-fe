@@ -1,7 +1,5 @@
 import Dashboard from "layouts/dashboard";
-import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
 
 // Argon Dashboard 2 MUI components
 import ArgonBox from "components/ArgonBox";
@@ -45,7 +43,7 @@ const routes = [
   },
   {
     type: "route",
-    name: "Tiền thưởng",
+    name: "Trả thưởng",
     key: "bonuses",
     route: "/bonuses",
     icon: (
@@ -114,14 +112,6 @@ const routes = [
         component: <SignIn />,
       },
   ,
-  {
-    type: "route",
-    name: "Đăng ký",
-    key: "sign-up",
-    route: "/authentication/sign-up",
-    icon: <ArgonBox component="i" color="info" fontSize="14px" className="ni ni-collection" />,
-    component: <SignUp />,
-  },
 ];
 
 export default routes;

@@ -20,6 +20,17 @@ dayjs.extend(customParseFormat);
 
 function SettingDate() {
   const [data, setData] = useState();
+  const [visibleMessage, setVisibleMessage] = useState(false);
+  const [message, setMessage] = useState(false);
+  const [isError, setIsError] = useState(false)
+
+  const handleVisibleAlert = useCallback((message, error) => {
+    setVisibleMessage(true)
+    setMessage(message);
+    if(error) {
+      setIsError(true)
+    }
+  }, [])
 
   const fetchData = useCallback(async () => {
     const res = await api.get("date-price");
@@ -60,12 +71,15 @@ function SettingDate() {
         if (newDate._id) {
           await api.put(`date-price/${newDate._id}`, { data: convertDate });
           await fetchData();
+          handleVisibleAlert("Cập nhật thành công")
         } else {
           await api.post(`date-price`, { data: convertDate });
           await fetchData();
+          handleVisibleAlert("Tạo mới thành công")
         }
       } catch (error) {
         console.log(error, "err");
+        handleVisibleAlert("Có lỗi xảy ra!", true)
       }
     },
     [fetchData]
@@ -142,8 +156,15 @@ function SettingDate() {
                 </Box>
               </ArgonBox>
             </Box>
+            <AutoCloseMessage
+          message={message}
+          visible={visibleMessage}
+          setVisible={setVisibleMessage}
+          status={!!isError && "error"}
+        />
           </Card>
         </ArgonBox>
+
       </ArgonBox>
     </DashboardLayout>
   );

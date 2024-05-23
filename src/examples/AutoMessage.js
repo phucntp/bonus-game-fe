@@ -2,7 +2,7 @@ import * as React from "react";
 import Alert from "@mui/material/Alert";
 import { Snackbar } from "@mui/material";
 
-export default function AutoCloseMessage({ visible, time, message, setVisible }) {
+export default function AutoCloseMessage({ visible, time, message, setVisible, status }) {
   const [open, setOpen] = React.useState(false);
 
   const handleClose = (event, reason) => {
@@ -25,7 +25,7 @@ export default function AutoCloseMessage({ visible, time, message, setVisible })
         autoHideDuration={time || 2000}
         onClose={handleClose}
       >
-        <Alert onClose={handleClose} severity="success">
+        <Alert onClose={handleClose} severity={status || "success"}>
           {message || "Thành công"}
         </Alert>
       </Snackbar>

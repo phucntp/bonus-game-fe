@@ -4,11 +4,21 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import ArgonInput from "components/ArgonInput";
 import ArgonTypography from "components/ArgonTypography";
 import React, { useCallback, useEffect, useState } from "react";
-import axios from "axios";
 import api from "layouts/axios";
 
 const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
   const [itemSelected, setItemSelected] = useState();
+  const [visibleMessage, setVisibleMessage] = useState(false);
+  const [message, setMessage] = useState(false);
+  const [isError, setIsError] = useState(false)
+
+  const handleVisibleAlert = useCallback((message, error) => {
+    setVisibleMessage(true)
+    setMessage(message);
+    if(error) {
+      setIsError(true)
+    }
+  }, [])
 
   const handleChangeValue = useCallback((key, value) => {
     setItemSelected((prev) => ({ ...prev, [key]: value }));
@@ -33,14 +43,14 @@ const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
       if (imageFile.type.startsWith("image/")) {
         setSelectedImage(imageFile);
       } else {
-        alert("Please select an image file.");
+        handleVisibleAlert("Please select an image file.", true)
       }
     }
   };
 
   const handleUpload = () => {
     if (!selectedImage) {
-      alert("Please select an image.");
+      handleVisibleAlert("Please select an image.", true)
       return;
     }
 
@@ -175,6 +185,12 @@ const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
             </Button>
           </Box>
         </ArgonBox>
+        <AutoCloseMessage
+          message={message}
+          visible={visibleMessage}
+          setVisible={setVisibleMessage}
+          status={!!isError && "error"}
+        />
       </Box>
     </Modal>
   );

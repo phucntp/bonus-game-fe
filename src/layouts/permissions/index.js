@@ -12,17 +12,30 @@ import api from "layouts/axios";
 import { compact } from "lodash";
 
 // Data
-import authorsTableData from "layouts/bonus/data/authorsTableData";
+import authorsTableData from "layouts/members/data/authorsTableData";
 import { useCallback, useEffect, useState } from "react";
-import { Box, Button, MenuItem, Select } from "@mui/material";
+import ModalEdit from "./ModalEdit";
 
-function Permissions() {
+function Members() {
   const [data, setData] = useState([]);
+  const [visibleEdit, setVisibleEdit] = useState(false);
+  const [memberSelected, setMemberSelected] = useState();
+  const [visibleMessage, setVisibleMessage] = useState(false);
+  const [message, setMessage] = useState(false);
+  const [isError, setIsError] = useState(false)
 
   const fetchData = useCallback(async () => {
-    const res = await api.get("user");
+    const res = await api.get("permission");
     setData(res.data?.data || []);
   }, []);
+
+  const handleVisibleAlert = useCallback((message, error) => {
+    setVisibleMessage(true)
+    setMessage(message);
+    if(error) {
+      setIsError(true)
+    }
+  }, [])
 
   useEffect(() => {
     fetchData();
@@ -31,9 +44,63 @@ function Permissions() {
   const handleDelete = useCallback(async (ids) => {
     try {
       if (compact(ids)?.length)
-        await api.post("bonus/remove-members", { data: { ids: compact(ids) } });
-    } catch (error) {}
+        await api.post("permission/remove-permission", { data: { ids: compact(ids) } });
+
+      await fetchData();
+      handleVisibleAlert("Xóa thành công")
+    } catch (error) {
+      handleVisibleAlert("Có lỗi xảy ra!", true)
+    }
   }, []);
+
+  const handleOpenEdit = useCallback((member) => {
+    setMemberSelected(member);
+    setVisibleEdit(true);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setVisibleEdit(false);
+    setMemberSelected(undefined);
+  }, []);
+
+  const handleEdit = useCallback(async (newMember) => {
+    try {
+      if(!newMember.permissions) {
+        handleVisibleAlert("Vui lòng nhập quyền", true)
+        return;
+      }
+      if(!newMember.user) {
+        handleVisibleAlert("Vui lòng nhập người được phân quyền", true)
+        return;
+      }
+      if(newMember?._id) {
+        await api.put(`permission/${newMember._id}`, { data: newMember });
+        await fetchData();
+        handleVisibleAlert("Câp nhật quyền thành công")
+      } else {
+        await api.post(`permission`, { data: newMember });
+        handleVisibleAlert("Thêm quyền thành công")
+      }
+      handleClose();
+    } catch (error) {
+      handleVisibleAlert("Có lỗi xảy ra!", true)
+    }
+  }, [fetchData]);
+
+  const handleImport = useCallback(async (dataImport) => {
+    try {
+      if (dataImport?.length) {
+        await api.post(`member/upload-excel`, { data: dataImport });
+        handleCloseExcel();
+        await fetchData();
+      }
+      handleVisibleAlert("Cập nhật excel thành công")
+    } catch (error) {
+      handleVisibleAlert("Có lỗi xảy ra!", true)
+    }
+  }, []);
+
+  const { columns, rows } = authorsTableData(data, handleDelete, handleOpenEdit);
 
   return (
     <DashboardLayout>
@@ -41,63 +108,38 @@ function Permissions() {
       <ArgonBox py={3}>
         <ArgonBox mb={3}>
           <Card>
-            <Box
-              style={{
-                width: "450px",
-                backgroundColor: "#ffffff",
-                // height: "460px",
-                padding: "15px",
-                fontSize: "12px",
+            <ArgonBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+              <ArgonTypography variant="h6">Danh sách quyền</ArgonTypography>
+            </ArgonBox>
+            <ArgonBox
+              sx={{
+                "& .MuiTableRow-root:not(:last-child)": {
+                  "& td": {
+                    borderBottom: ({ borders: { borderWidth, borderColor } }) =>
+                      `${borderWidth[1]} solid ${borderColor}`,
+                  },
+                },
               }}
             >
-              <ArgonTypography size="lg">Thiết lập quyền</ArgonTypography>
-              <ArgonBox component="form" role="form" mt={2}>
-                <ArgonBox mb={2}>
-                  <ArgonTypography fontSize="16px" size="sm">
-                    Tài khoản
-                  </ArgonTypography>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Trạng thái"
-                    // value={itemSelected?.status}
-                  >
-                    <MenuItem value={"Hoạt Đông"}>User 1</MenuItem>
-                    <MenuItem value={"Tạm dừng"}>User 2</MenuItem>
-                  </Select>
-                </ArgonBox>
-                <ArgonBox mb={2}>
-                  <ArgonTypography fontSize="16px" size="sm">
-                    Quyền
-                  </ArgonTypography>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Trạng thái"
-                    // value={itemSelected?.status}
-                  >
-                    <MenuItem value={"Hoạt Đông"}>Quản lý thành viên</MenuItem>
-                    <MenuItem value={"Tạm dừng"}>Quản lý hoạt động quay thưởng</MenuItem>
-                    <MenuItem value={"Tạm dừng"}>Quản lý trang</MenuItem>
-                  </Select>
-                </ArgonBox>
-                <Box
-                  style={{
-                    display: "flex",
-                    justifyContent: "end",
-                  }}
-                >
-                  <Button style={{ border: "1px solid" }} onClick={() => handleEdit(itemSelected)}>
-                    Cập nhật
-                  </Button>
-                </Box>
-              </ArgonBox>
-            </Box>
+              <Table columns={columns} rows={rows} />
+            </ArgonBox>
           </Card>
         </ArgonBox>
       </ArgonBox>
+      <ModalEdit
+        visible={visibleEdit}
+        member={memberSelected}
+        handleEdit={handleEdit}
+        handleClose={handleClose}
+      />
+      <AutoCloseMessage
+          message={message}
+          visible={visibleMessage}
+          setVisible={setVisibleMessage}
+          status={!!isError && "error"}
+        />
     </DashboardLayout>
   );
 }
 
-export default Permissions;
+export default Members;

@@ -22,11 +22,22 @@ function Members() {
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [memberSelected, setMemberSelected] = useState();
   const [visibleExcel, setVisibleExcel] = useState(false);
+  const [visibleMessage, setVisibleMessage] = useState(false);
+  const [message, setMessage] = useState(false);
+  const [isError, setIsError] = useState(false)
 
   const fetchData = useCallback(async () => {
     const res = await api.get("member");
     setData(res.data?.data || []);
   }, []);
+
+  const handleVisibleAlert = useCallback((message, error) => {
+    setVisibleMessage(true)
+    setMessage(message);
+    if(error) {
+      setIsError(true)
+    }
+  }, [])
 
   useEffect(() => {
     fetchData();
@@ -38,7 +49,10 @@ function Members() {
         await api.post("member/remove-members", { data: { ids: compact(ids) } });
 
       await fetchData();
-    } catch (error) {}
+      handleVisibleAlert("Xóa thành viên thành công")
+    } catch (error) {
+      handleVisibleAlert("Có lỗi xảy ra!", true)
+    }
   }, []);
 
   const handleOpenEdit = useCallback((member) => {
@@ -61,11 +75,18 @@ function Members() {
 
   const handleEdit = useCallback(async (newMember) => {
     try {
+      if(!newMember.code) {
+        handleVisibleAlert("Vui lòng nhập mã số thành viên", true)
+        return;
+      }
       await api.put(`member/${newMember._id}`, { data: newMember });
-      handleClose();
       await fetchData();
-    } catch (error) {}
-  }, []);
+      handleClose();
+      handleVisibleAlert("Câp nhật thành viên thành công")
+    } catch (error) {
+      handleVisibleAlert("Có lỗi xảy ra!", true)
+    }
+  }, [fetchData]);
 
   const handleImport = useCallback(async (dataImport) => {
     try {
@@ -74,7 +95,10 @@ function Members() {
         handleCloseExcel();
         await fetchData();
       }
-    } catch (error) {}
+      handleVisibleAlert("Cập nhật excel thành công")
+    } catch (error) {
+      handleVisibleAlert("Có lỗi xảy ra!", true)
+    }
   }, []);
 
   const { columns, rows } = authorsTableData(data, handleDelete, handleOpenEdit);
@@ -177,6 +201,12 @@ function Members() {
         handleClose={handleCloseExcel}
         handleImport={handleImport}
       />
+      <AutoCloseMessage
+          message={message}
+          visible={visibleMessage}
+          setVisible={setVisibleMessage}
+          status={!!isError && "error"}
+        />
     </DashboardLayout>
   );
 }
