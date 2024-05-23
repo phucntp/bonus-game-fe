@@ -4,6 +4,8 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import ArgonInput from "components/ArgonInput";
 import ArgonTypography from "components/ArgonTypography";
 import React, { useCallback, useEffect, useState } from "react";
+import axios from "axios";
+import api from "layouts/axios";
 
 const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
   const [itemSelected, setItemSelected] = useState();
@@ -20,6 +22,52 @@ const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
     handleClose();
     setItemSelected(undefined);
   }, []);
+
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleImageChange = (event) => {
+    // Check if any file is selected
+    if (event.target.files && event.target.files[0]) {
+      const imageFile = event.target.files[0];
+      // Check if the selected file is an image
+      if (imageFile.type.startsWith("image/")) {
+        setSelectedImage(imageFile);
+      } else {
+        alert("Please select an image file.");
+      }
+    }
+  };
+
+  const handleUpload = () => {
+    if (!selectedImage) {
+      alert("Please select an image.");
+      return;
+    }
+
+    // Create a FormData object to send the image file
+    const formData = new FormData();
+    formData.append("image", selectedImage);
+
+    // Make a POST request to your API endpoint
+    api
+      .post(
+        "files/upload",
+        { data: formData },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((response) => {
+        console.log("Upload successful:", response.data);
+        // Handle response if needed
+      })
+      .catch((error) => {
+        console.error("Error uploading image:", error);
+        // Handle error if needed
+      });
+  };
 
   return (
     <Modal
@@ -102,6 +150,20 @@ const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
               <MenuItem value={"Tạm dừng"}>Tạm Dừng</MenuItem>
             </Select>
           </ArgonBox>
+          <div>
+            <h2>Upload Image</h2>
+            <input type="file" accept="image/*" onChange={handleImageChange} />
+            {selectedImage && (
+              <div>
+                <img
+                  src={URL.createObjectURL(selectedImage)}
+                  alt="Selected"
+                  style={{ maxWidth: "100%", marginTop: "10px" }}
+                />
+              </div>
+            )}
+            <button onClick={handleUpload}>Upload</button>
+          </div>
           <Box
             style={{
               display: "flex",

@@ -12,6 +12,7 @@ import ArgonButton from "components/ArgonButton";
 // Authentication layout components
 import IllustrationLayout from "layouts/authentication/components/IllustrationLayout";
 import api from "layouts/axios";
+import AutoCloseMessage from "examples/AutoMessage";
 
 // Image
 const bgImage =
@@ -20,6 +21,8 @@ const bgImage =
 function Illustration() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [visibleMessage, setVisibleMessage] = useState(false);
+  const [message, setMessage] = useState(false);
 
   const navigate = useNavigate();
 
@@ -28,8 +31,12 @@ function Illustration() {
       try {
         const res = await api.post("login", { data: { name, password } });
         if (res.data) {
+          setVisibleMessage(true);
+          setMessage("Đăng nhập thành công.");
           sessionStorage.setItem("userLogin", JSON.stringify(res.data));
-          navigate("/dashboard");
+          setTimeout(() => {
+            navigate("/dashboard");
+          }, 2000);
         }
       } catch (error) {}
     }
@@ -73,6 +80,11 @@ function Illustration() {
             </ArgonTypography>
           </ArgonTypography>
         </ArgonBox>
+        <AutoCloseMessage
+          message={message}
+          visible={visibleMessage}
+          setVisible={setVisibleMessage}
+        />
       </ArgonBox>
     </IllustrationLayout>
   );

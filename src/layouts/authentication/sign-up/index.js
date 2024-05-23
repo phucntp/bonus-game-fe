@@ -32,6 +32,7 @@ import Socials from "layouts/authentication/components/Socials";
 import Separator from "layouts/authentication/components/Separator";
 import { useCallback, useState } from "react";
 import api from "layouts/axios";
+import AutoCloseMessage from "examples/AutoMessage";
 
 // Images
 const bgImage =
@@ -41,16 +42,20 @@ function Cover() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [visibleMessage, setVisibleMessage] = useState(false);
+  const [message, setMessage] = useState(false);
   const navigate = useNavigate();
 
   const handelRegister = useCallback(async () => {
     if (password && name) {
       try {
         const res = await api.post("user", { data: { name, password, email } });
-        if (res.data) {
-          navigate("/authentication/sign-in");
-        }
-      } catch (error) {}
+        setVisibleMessage(true);
+        setMessage("Đăng ký thành công. Vui lòng đăng nhập lại");
+      } catch (error) {
+        setMessage("Đăng ký thất bại.Vui lòng kiểm tra lại thông tin");
+        setVisibleMessage(true);
+      }
     }
   }, [password, name]);
 
@@ -109,6 +114,11 @@ function Cover() {
             </ArgonBox>
           </ArgonBox>
         </ArgonBox>
+        <AutoCloseMessage
+          message={message}
+          visible={visibleMessage}
+          setVisible={setVisibleMessage}
+        />
       </Card>
     </CoverLayout>
   );
