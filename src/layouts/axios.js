@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:2000/api/";
+const baseUrl = "http://103.147.34.54:9090/api/";
 class ApiClient {
   constructor() {
     this.api = axios.create({
