@@ -33,7 +33,7 @@ const authorsTableData = (data, handleDelete, handleOpenEdit) => ({
     { title: "Tên nội dung", align: "left", name: "name" },
     { title: "Số tiền thưởng", align: "left", name: "numberBonus" },
     { title: "Tỷ lệ chiến thắng", name: "percentWin", align: "left" },
-    { title: "Url", name: "url", align: "left" },
+    { title: "Url", name: "urlImage", align: "left" },
     { title: "Trạng thái", align: "left", name: "status" },
     { title: "action", align: "center", name: "action" },
   ],
@@ -60,10 +60,10 @@ const authorsTableData = (data, handleDelete, handleOpenEdit) => ({
           {dt.percentWin}
         </ArgonTypography>
       ),
-      url: (
-        <ArgonTypography variant="caption" color="secondary" fontWeight="medium">
-          {dt.url}
-        </ArgonTypography>
+      urlImage: (
+           <ArgonBox mr={2}>
+            <ArgonAvatar src={dt.urlImage} alt={dt.urlImage} size="sm" variant="rounded" />
+          </ArgonBox>
       ),
       status: (
         <ArgonTypography variant="caption" color="secondary" fontWeight="medium">
@@ -72,7 +72,7 @@ const authorsTableData = (data, handleDelete, handleOpenEdit) => ({
       ),
       action: (
         <ArgonTypography>
-          <ArgonTypography
+          <div style={{display: 'flex', alignItems: 'center'}}><ArgonTypography
             component="a"
             href="#"
             variant="caption"
@@ -85,7 +85,7 @@ const authorsTableData = (data, handleDelete, handleOpenEdit) => ({
           <ButtonDelete
             handleDelete={() => handleDelete([dt._id])}
             content="Bạn có chắc chắn xóa phần thưởng này"
-          />
+          /></div>
         </ArgonTypography>
       ),
     };

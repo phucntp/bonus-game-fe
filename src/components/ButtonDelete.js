@@ -16,9 +16,10 @@ const ButtonDelete = ({ handleDelete, title, content }) => {
   }, []);
 
   return (
-    <ArgonBox>
+    <ArgonBox style={{display: "flex"}}>
       <ArgonTypography
-        component="button"
+        component="a"
+        href="#"
         variant="caption"
         color="#ff0000"
         fontWeight="medium"

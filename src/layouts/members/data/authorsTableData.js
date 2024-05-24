@@ -72,7 +72,7 @@ const authorsTableData = (data, handleDelete, handleOpenEdit) => ({
       action: (
         <ArgonTypography>
           <ArgonTypography
-            component="button"
+            component="a"
             variant="caption"
             color="primary"
             fontWeight="medium"
@@ -82,7 +82,7 @@ const authorsTableData = (data, handleDelete, handleOpenEdit) => ({
           </ArgonTypography>
           <ButtonDelete
             handleDelete={() => handleDelete([dt._id])}
-            content="Bạn có chắc chắn xóa thành viên này"
+            content="Bạn có chắc chắn xóa thành viên này?"
           />
         </ArgonTypography>
       ),

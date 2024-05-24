@@ -33,6 +33,7 @@ function Illustration() {
   }, [])
 
   const handelLogin = useCallback(async () => {
+    setIsError(false)
     if (password && name) {
       try {
         const res = await api.post("login", { data: { name, password } });
@@ -44,7 +45,7 @@ function Illustration() {
           }, 2000);
         }
       } catch (error) {
-        handleVisibleAlert("Đăng nhập thất vại. Vui lòng kiểm tra lại thông tin");
+        handleVisibleAlert("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin");
         setIsError(true)
       } 
     } else if(!name) {
@@ -80,7 +81,7 @@ function Illustration() {
             Đăng nhập
           </ArgonButton>
         </ArgonBox>
-        <ArgonBox mt={3} textAlign="center">
+        {/* <ArgonBox mt={3} textAlign="center">
           <ArgonTypography variant="button" color="text" fontWeight="regular">
             Không có tài khoản
             <ArgonTypography
@@ -93,7 +94,7 @@ function Illustration() {
               Đăng ký
             </ArgonTypography>
           </ArgonTypography>
-        </ArgonBox>
+        </ArgonBox> */}
         <AutoCloseMessage
           message={message}
           visible={visibleMessage}

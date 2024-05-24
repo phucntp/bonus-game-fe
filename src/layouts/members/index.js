@@ -16,6 +16,7 @@ import authorsTableData from "layouts/members/data/authorsTableData";
 import { useCallback, useEffect, useState } from "react";
 import ModalEdit from "./ModalEdit";
 import ModalExcel from "./ModalExcel";
+import AutoCloseMessage from "examples/AutoMessage";
 
 function Members() {
   const [data, setData] = useState([]);
@@ -202,11 +203,11 @@ function Members() {
         handleImport={handleImport}
       />
       <AutoCloseMessage
-          message={message}
-          visible={visibleMessage}
-          setVisible={setVisibleMessage}
-          status={!!isError && "error"}
-        />
+        message={message}
+        visible={visibleMessage}
+        setVisible={setVisibleMessage}
+        status={!!isError && "error"}
+      />
     </DashboardLayout>
   );
 }

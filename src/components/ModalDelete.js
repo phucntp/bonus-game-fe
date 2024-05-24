@@ -49,10 +49,10 @@ const ModalDelete = ({ visible, handleClose, handleSave, title, content }) => {
               justifyContent: "end",
             }}
           >
-            <Button style={{ border: "1px solid" }} onClick={handleOk} color="primary">
+            <Button style={{ border: "1px solid", marginRight: "10px" }} className="!mr-2" onClick={handleOk} color="primary">
               Có
             </Button>
-            <Button style={{ border: "1px solid" }} onClick={closeModal}>
+            <Button style={{ border: "1px solid" }} onClick={closeModal} color="secondary">
               Không
             </Button>
           </Box>

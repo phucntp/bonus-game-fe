@@ -12,19 +12,23 @@ import api from "layouts/axios";
 import { compact } from "lodash";
 
 // Data
-import authorsTableData from "layouts/prizes/data/authorsTableData";
+import authorsTableData from "layouts/members/data/authorsTableData";
 import { useCallback, useEffect, useState } from "react";
 import ModalEdit from "./ModalEdit";
-import { Button } from "@mui/material";
 import AutoCloseMessage from "examples/AutoMessage";
 
-function Prizes() {
+function Members() {
   const [data, setData] = useState([]);
   const [visibleEdit, setVisibleEdit] = useState(false);
-  const [prizeSelected, setPrizeSelected] = useState();
+  const [memberSelected, setMemberSelected] = useState();
   const [visibleMessage, setVisibleMessage] = useState(false);
   const [message, setMessage] = useState(false);
   const [isError, setIsError] = useState(false)
+
+  const fetchData = useCallback(async () => {
+    const res = await api.get("permission");
+    setData(res.data?.data || []);
+  }, []);
 
   const handleVisibleAlert = useCallback((message, error) => {
     setVisibleMessage(true)
@@ -34,20 +38,6 @@ function Prizes() {
     }
   }, [])
 
-
-  const fetchData = useCallback(async () => {
-    try {
-      const res = await api.get("prize");
-    if (res.data?.data?.length) {
-      setData(res.data?.data?.sort((a, b) => a.order - b.order));
-    } else {
-      setData([]);
-    }
-    } catch (error) {
-      handleVisibleAlert("Có lỗi xảy ra!", true)
-    }
-  }, []);
-
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -55,8 +45,9 @@ function Prizes() {
   const handleDelete = useCallback(async (ids) => {
     try {
       if (compact(ids)?.length)
-        await api.post("prize/remove-prizes", { data: { ids: compact(ids) } });
-      fetchData();
+        await api.post("permission/remove-permission", { data: { ids: compact(ids) } });
+
+      await fetchData();
       handleVisibleAlert("Xóa thành công")
     } catch (error) {
       handleVisibleAlert("Có lỗi xảy ra!", true)
@@ -64,33 +55,51 @@ function Prizes() {
   }, []);
 
   const handleOpenEdit = useCallback((member) => {
-    setPrizeSelected(member);
+    setMemberSelected(member);
     setVisibleEdit(true);
   }, []);
 
   const handleClose = useCallback(() => {
     setVisibleEdit(false);
-    setPrizeSelected(undefined);
+    setMemberSelected(undefined);
   }, []);
 
-  const handleEdit = useCallback(
-    async (newMember) => {
-      try {
-        if (newMember._id) {
-          await api.put(`prize/${newMember._id}`, { data: newMember });
-          await fetchData();
-        } else {
-          await api.post(`prize`, { data: newMember });
-          await fetchData();
-        }
-        handleClose();
-        handleVisibleAlert("Cập nhật thành công")
-      } catch (error) {
-        handleVisibleAlert("Có lỗi xảy ra!", true)
+  const handleEdit = useCallback(async (newMember) => {
+    try {
+      if(!newMember.permissions) {
+        handleVisibleAlert("Vui lòng nhập quyền", true)
+        return;
       }
-    },
-    [fetchData]
-  );
+      if(!newMember.user) {
+        handleVisibleAlert("Vui lòng nhập người được phân quyền", true)
+        return;
+      }
+      if(newMember?._id) {
+        await api.put(`permission/${newMember._id}`, { data: newMember });
+        await fetchData();
+        handleVisibleAlert("Câp nhật quyền thành công")
+      } else {
+        await api.post(`permission`, { data: newMember });
+        handleVisibleAlert("Thêm quyền thành công")
+      }
+      handleClose();
+    } catch (error) {
+      handleVisibleAlert("Có lỗi xảy ra!", true)
+    }
+  }, [fetchData]);
+
+  const handleImport = useCallback(async (dataImport) => {
+    try {
+      if (dataImport?.length) {
+        await api.post(`member/upload-excel`, { data: dataImport });
+        handleCloseExcel();
+        await fetchData();
+      }
+      handleVisibleAlert("Cập nhật excel thành công")
+    } catch (error) {
+      handleVisibleAlert("Có lỗi xảy ra!", true)
+    }
+  }, []);
 
   const { columns, rows } = authorsTableData(data, handleDelete, handleOpenEdit);
 
@@ -101,8 +110,7 @@ function Prizes() {
         <ArgonBox mb={3}>
           <Card>
             <ArgonBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <ArgonTypography variant="h6">Danh sách giải thưởng</ArgonTypography>
-              <Button onClick={() => setVisibleEdit(true)}>Thêm giải thưởng</Button>
+              <ArgonTypography variant="h6">Danh sách người dùng</ArgonTypography>
             </ArgonBox>
             <ArgonBox
               sx={{
@@ -121,7 +129,7 @@ function Prizes() {
       </ArgonBox>
       <ModalEdit
         visible={visibleEdit}
-        prize={prizeSelected}
+        member={memberSelected}
         handleEdit={handleEdit}
         handleClose={handleClose}
       />
@@ -135,4 +143,4 @@ function Prizes() {
   );
 }
 
-export default Prizes;
+export default Members;

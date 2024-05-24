@@ -15,6 +15,7 @@ import { Box, Button } from "@mui/material";
 import ArgonInput from "components/ArgonInput";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import AutoCloseMessage from "examples/AutoMessage";
 
 dayjs.extend(customParseFormat);
 

@@ -5,6 +5,7 @@ import ArgonInput from "components/ArgonInput";
 import ArgonTypography from "components/ArgonTypography";
 import React, { useCallback, useEffect, useState } from "react";
 import api from "layouts/axios";
+import AutoCloseMessage from "examples/AutoMessage";
 
 const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
   const [itemSelected, setItemSelected] = useState();

@@ -7,7 +7,7 @@ import Members from "layouts/members";
 import Bonuses from "layouts/bonus";
 import Prizes from "layouts/prizes";
 import SettingDate from "layouts/setting-date";
-import Permissions from "layouts/permissions";
+import Users from "layouts/users";
 
 const userLogin = sessionStorage.getItem("userLogin");
 const dataUser = userLogin ? JSON.parse(userLogin) : "";
@@ -63,13 +63,13 @@ const routes = [
   },
   {
     type: "route",
-    name: "Thiết lập quyền",
-    key: "permissions",
-    route: "/permissions",
+    name: "Thiết lập người dùng",
+    key: "users",
+    route: "/users",
     icon: (
       <ArgonBox component="i" color="warning" fontSize="14px" className="ni ni-calendar-grid-58" />
     ),
-    component: <Permissions />,
+    component: <Users />,
   },
   { type: "title", title: "Account Pages", key: "account-pages" },
   // {
@@ -80,37 +80,21 @@ const routes = [
   //   icon: <ArgonBox component="i" color="dark" fontSize="14px" className="ni ni-single-02" />,
   //   component: <Profile />,
   // },
-  dataUser?.accessToken
-    ? {
-        type: "route",
-        name: "Đăng xuất",
-        key: "sign-out",
-        route: "/authentication/sign-in",
-        icon: (
-          <ArgonBox
-            component="i"
-            color="warning"
-            fontSize="14px"
-            className="ni ni-single-copy-04"
-          />
-        ),
-        component: <SignIn />,
-      }
-    : {
-        type: "route",
-        name: "Đăng nhập",
-        key: "sign-in",
-        route: "/authentication/sign-in",
-        icon: (
-          <ArgonBox
-            component="i"
-            color="warning"
-            fontSize="14px"
-            className="ni ni-single-copy-04"
-          />
-        ),
-        component: <SignIn />,
-      },
+  {
+    type: "route",
+    name: "Đăng xuất",
+    key: "sign-out",
+    route: "/authentication/sign-in",
+    icon: (
+      <ArgonBox
+        component="i"
+        color="warning"
+        fontSize="14px"
+        className="ni ni-single-copy-04"
+      />
+    ),
+    component: <SignIn />,
+  }
   ,
 ];
 

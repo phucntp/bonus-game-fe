@@ -14,6 +14,9 @@ import { compact } from "lodash";
 // Data
 import authorsTableData from "layouts/bonus/data/authorsTableData";
 import { useCallback, useEffect, useState } from "react";
+import React from "react";
+import { Box, Tab, Tabs } from "@mui/material";
+import CustomTabPanel from "./CustomTabPanel";
 
 function Bonuses() {
   const [data, setData] = useState([]);
@@ -24,9 +27,9 @@ function Bonuses() {
   };
 
   const fetchData = useCallback(async () => {
-    const res = await api.get("bonus");
+    const res = await api.get(`bonus?sent=${valueTab === 0}`);
     setData(res.data?.data || []);
-  }, []);
+  }, [valueTab]);
 
   useEffect(() => {
     fetchData();
@@ -40,6 +43,13 @@ function Bonuses() {
   }, []);
 
   const { columns, rows } = authorsTableData(data, handleDelete);
+
+  const a11yProps = (index) => {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+    };
+  }
 
   return (
     <DashboardLayout>

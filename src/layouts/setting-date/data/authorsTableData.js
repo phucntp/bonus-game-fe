@@ -26,14 +26,14 @@ function Author({ image, name, email }) {
 
 const authorsTableData = (data, handleDelete) => ({
   columns: [
-    { title: "ID", align: "center", name: "id" },
-    { title: "Số thành viên", align: "left", name: "numberMember" },
-    { title: "Số tiền thưởng", align: "left", name: "numberBonus" },
-    { title: "Đã gửi chưa?", name: "sent", align: "left" },
-    { title: "Ip", name: "ip", align: "left" },
-    { title: "Thời gian trúng giải", align: "left", name: "date" },
-    { title: "Người thực hiện thao tác", align: "left", name: "implementer" },
-    { title: "action", align: "center", name: "action" },
+    { title: "ID", align: "center", name: "id", width: 50 },
+    { title: "Số thành viên", align: "left", name: "numberMember", width: 150 },
+    { title: "Số tiền thưởng", align: "left", name: "numberBonus", width: 150 },
+    { title: "Đã gửi chưa?", name: "sent", align: "left", width: 150 },
+    { title: "Ip", name: "ip", align: "left", width: 250 },
+    { title: "Thời gian trúng giải", align: "left", name: "date", width: 250 },
+    { title: "Người thực hiện thao tác", align: "left", name: "implementer", width: 250 },
+    { title: "action", align: "center", name: "action", width: 250 },
   ],
 
   rows: data.map((dt, index) => {
@@ -77,7 +77,7 @@ const authorsTableData = (data, handleDelete) => ({
       ),
       action: (
         <ArgonTypography>
-          <ArgonTypography
+          <div className="flex"><ArgonTypography
             component="a"
             variant="caption"
             color="#ff0000"
@@ -86,7 +86,7 @@ const authorsTableData = (data, handleDelete) => ({
             onClick={() => handleDelete([dt._id])}
           >
             Xóa
-          </ArgonTypography>
+          </ArgonTypography></div>
         </ArgonTypography>
       ),
     };
