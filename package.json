@@ -4,6 +4,7 @@
   "author": "Creative Tim",
   "license": "SEE LICENSE IN <https://www.creative-tim.com/license>",
   "description": "React version of Bonus game",
+  "homepage": "./",
   "dependencies": {
     "@emotion/cache": "11.11.0",
     "@emotion/react": "11.11.0",
