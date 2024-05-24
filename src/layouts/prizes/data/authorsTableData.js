@@ -67,7 +67,7 @@ const authorsTableData = (data, handleDelete, handleOpenEdit) => ({
       ),
       status: (
         <ArgonTypography variant="caption" color="secondary" fontWeight="medium">
-          {dt.status}
+          {dt.status === "active" ? "Hoạt động" : "Tạm ngừng"}
         </ArgonTypography>
       ),
       action: (

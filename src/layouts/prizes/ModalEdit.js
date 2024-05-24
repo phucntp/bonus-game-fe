@@ -1,4 +1,4 @@
-import { Button, Modal, Box, MenuItem, InputLabel } from "@mui/material";
+import { Button, Modal, Box, MenuItem, InputLabel, FormControl } from "@mui/material";
 import ArgonBox from "components/ArgonBox";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import ArgonInput from "components/ArgonInput";
@@ -148,7 +148,7 @@ const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
             />
           </ArgonBox>
           <ArgonBox mb={2}>
-            <ArgonTypography fontSize="16px" size="sm">
+            {/* <ArgonTypography fontSize="16px" size="sm">
               Trạng thái
             </ArgonTypography>
             <Select
@@ -159,7 +159,20 @@ const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
             >
               <MenuItem value={"Hoạt Đông"}>Hoạt động</MenuItem>
               <MenuItem value={"Tạm dừng"}>Tạm Dừng</MenuItem>
+            </Select> */}
+            <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Tài khoản</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={itemSelected?.status}
+              label="Trạng thái"
+              onChange={(v) => handleChangeValue('status', v)}
+            >
+            <MenuItem value={"Hoạt Đông"}>Hoạt động</MenuItem>
+                        <MenuItem value={"Tạm dừng"}>Tạm Dừng</MenuItem>
             </Select>
+          </FormControl>
           </ArgonBox>
           <div>
             <h2>Upload Image</h2>
