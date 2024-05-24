@@ -26,7 +26,7 @@ function Members() {
   const [isError, setIsError] = useState(false)
 
   const fetchData = useCallback(async () => {
-    const res = await api.get("permission");
+    const res = await api.get("user");
     setData(res.data?.data || []);
   }, []);
 
@@ -87,19 +87,6 @@ function Members() {
       handleVisibleAlert("Có lỗi xảy ra!", true)
     }
   }, [fetchData]);
-
-  const handleImport = useCallback(async (dataImport) => {
-    try {
-      if (dataImport?.length) {
-        await api.post(`member/upload-excel`, { data: dataImport });
-        handleCloseExcel();
-        await fetchData();
-      }
-      handleVisibleAlert("Cập nhật excel thành công")
-    } catch (error) {
-      handleVisibleAlert("Có lỗi xảy ra!", true)
-    }
-  }, []);
 
   const { columns, rows } = authorsTableData(data, handleDelete, handleOpenEdit);
 

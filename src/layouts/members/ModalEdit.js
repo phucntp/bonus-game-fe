@@ -92,7 +92,7 @@ const ModalEdit = ({ visible, handleClose, handleEdit, member }) => {
               justifyContent: "end",
             }}
           >
-            <Button style={{ border: "1px solid" }} onClick={() => handleEdit(itemSelected)}>
+            <Button style={{ border: "1px solid", marginRight: "10px" }} onClick={() => handleEdit(itemSelected)}>
               Cập nhật
             </Button>
             <Button style={{ border: "1px solid" }} onClick={closeModal} color="secondary">

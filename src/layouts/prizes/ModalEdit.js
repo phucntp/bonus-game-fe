@@ -6,6 +6,8 @@ import ArgonTypography from "components/ArgonTypography";
 import React, { useCallback, useEffect, useState } from "react";
 import api from "layouts/axios";
 import AutoCloseMessage from "examples/AutoMessage";
+import SelectComponent from "components/SelectComponet";
+import axios from "axios";
 
 const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
   const [itemSelected, setItemSelected] = useState();
@@ -49,7 +51,7 @@ const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
     }
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!selectedImage) {
       handleVisibleAlert("Please select an image.", true)
       return;
@@ -60,24 +62,11 @@ const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
     formData.append("image", selectedImage);
 
     // Make a POST request to your API endpoint
-    api
-      .post(
-        "files/upload",
-        { data: formData },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
-      .then((response) => {
-        console.log("Upload successful:", response.data);
-        // Handle response if needed
-      })
-      .catch((error) => {
-        console.error("Error uploading image:", error);
-        // Handle error if needed
-      });
+    const response = await axios.post('http://localhost:2000/api/images/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   };
 
   return (
@@ -147,33 +136,7 @@ const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
               type="number"
             />
           </ArgonBox>
-          <ArgonBox mb={2}>
-            {/* <ArgonTypography fontSize="16px" size="sm">
-              Trạng thái
-            </ArgonTypography>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="Trạng thái"
-              // value={itemSelected?.status}
-            >
-              <MenuItem value={"Hoạt Đông"}>Hoạt động</MenuItem>
-              <MenuItem value={"Tạm dừng"}>Tạm Dừng</MenuItem>
-            </Select> */}
-            <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Tài khoản</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={itemSelected?.status}
-              label="Trạng thái"
-              onChange={(v) => handleChangeValue('status', v)}
-            >
-            <MenuItem value={"Hoạt Đông"}>Hoạt động</MenuItem>
-                        <MenuItem value={"Tạm dừng"}>Tạm Dừng</MenuItem>
-            </Select>
-          </FormControl>
-          </ArgonBox>
+          <SelectComponent valueSelect={itemSelected?.status}  onChangeSelect={(v) => handleChangeValue("status", v)} />
           <div>
             <h2>Upload Image</h2>
             <input type="file" accept="image/*" onChange={handleImageChange} />

@@ -43,7 +43,7 @@ const ModalExcel = ({ visible, handleClose, handleImport }) => {
               });
             } else if (String(dataExcel[0][i]).trim() === "IP") {
               itemAdd = Object.assign(itemAdd, {
-                timesRest: dataExcel[j][i] || "",
+                ip: dataExcel[j][i] || "",
               });
             }
           }
