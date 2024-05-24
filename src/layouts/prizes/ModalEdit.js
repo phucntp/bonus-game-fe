@@ -181,8 +181,11 @@ const ModalEdit = ({ visible, handleClose, handleEdit, prize }) => {
               justifyContent: "end",
             }}
           >
-            <Button style={{ border: "1px solid" }} onClick={() => handleEdit(itemSelected)}>
+            <Button style={{ border: "1px solid", marginRight: "10px" }} onClick={() => handleEdit(itemSelected)}>
               {itemSelected ? "Cập nhật" : "Thêm"}
+            </Button>
+            <Button style={{ border: "1px solid" }} onClick={closeModal} color="secondary">
+              Hủy
             </Button>
           </Box>
         </ArgonBox>

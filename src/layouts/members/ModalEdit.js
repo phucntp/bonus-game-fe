@@ -95,6 +95,9 @@ const ModalEdit = ({ visible, handleClose, handleEdit, member }) => {
             <Button style={{ border: "1px solid" }} onClick={() => handleEdit(itemSelected)}>
               Cập nhật
             </Button>
+            <Button style={{ border: "1px solid" }} onClick={closeModal} color="secondary">
+              Hủy
+            </Button>
           </Box>
         </ArgonBox>
       </Box>
