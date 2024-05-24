@@ -4,6 +4,7 @@ import ArgonTypography from "components/ArgonTypography";
 import dayjs from "dayjs";
 // Images
 import team2 from "assets/images/team-2.jpg";
+import numeral from "numeral";
 
 function Author({ image, name, email }) {
   return (
@@ -56,7 +57,7 @@ const authorsTableData = (data, handleDelete) => ({
       ),
       numberBonus: (
         <ArgonTypography variant="caption" color="secondary" fontWeight="medium">
-          {dt.numberBonus}
+          {numeral(dt.numberBonus || 0).format("0,0")} USD
         </ArgonTypography>
       ),
       sent: (
@@ -76,16 +77,10 @@ const authorsTableData = (data, handleDelete) => ({
       ),
       action: (
         <ArgonTypography>
-          <ArgonTypography
-            component="a"
-            variant="caption"
-            color="#ff0000"
-            fontWeight="medium"
-            ml={2}
-            onClick={() => handleDelete([dt._id])}
-          >
-            Xóa
-          </ArgonTypography>
+          <ButtonDelete
+            handleDelete={() => handleDelete([dt._id])}
+            content="Bạn có chắc chắn xóa thông tin trả thưởng này"
+          />
         </ArgonTypography>
       ),
     };

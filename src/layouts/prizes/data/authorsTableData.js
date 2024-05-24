@@ -6,6 +6,8 @@ import ArgonBadge from "components/ArgonBadge";
 
 // Images
 import team2 from "assets/images/team-2.jpg";
+import ButtonDelete from "components/ButtonDelete";
+import numeral from "numeral";
 
 function Author({ image, name, email }) {
   return (
@@ -50,7 +52,7 @@ const authorsTableData = (data, handleDelete, handleOpenEdit) => ({
       ),
       numberBonus: (
         <ArgonTypography variant="caption" color="secondary" fontWeight="medium">
-          {dt.numberBonus}
+          {numeral(dt.numberBonus || 0).format("0,0")} USD
         </ArgonTypography>
       ),
       percentWin: (
@@ -80,16 +82,10 @@ const authorsTableData = (data, handleDelete, handleOpenEdit) => ({
           >
             Sửa
           </ArgonTypography>
-          <ArgonTypography
-            component="a"
-            variant="caption"
-            color="#ff0000"
-            fontWeight="medium"
-            ml={2}
-            onClick={() => handleDelete([dt._id])}
-          >
-            Xóa
-          </ArgonTypography>
+          <ButtonDelete
+            handleDelete={() => handleDelete([dt._id])}
+            content="Bạn có chắc chắn xóa phần thưởng này"
+          />
         </ArgonTypography>
       ),
     };

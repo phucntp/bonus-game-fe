@@ -41,6 +41,10 @@ const ModalExcel = ({ visible, handleClose, handleImport }) => {
               itemAdd = Object.assign(itemAdd, {
                 nameAdmin: dataExcel[j][i] || "",
               });
+            } else if (String(dataExcel[0][i]).trim() === "IP") {
+              itemAdd = Object.assign(itemAdd, {
+                timesRest: dataExcel[j][i] || "",
+              });
             }
           }
           if (i === dataExcel[0].length - 1) {
@@ -61,6 +65,7 @@ const ModalExcel = ({ visible, handleClose, handleImport }) => {
       "Số tiền cược/Đặt cọc hiệu quả",
       "Tổng số lần tham gia",
       "Số lần còn lại",
+      "IP",
       "Tên người vận hành",
     ];
     const finalData = [];

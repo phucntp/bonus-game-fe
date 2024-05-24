@@ -1,11 +1,10 @@
 // Argon Dashboard 2 MUI components
 import ArgonBox from "components/ArgonBox";
 import ArgonTypography from "components/ArgonTypography";
-import ArgonAvatar from "components/ArgonAvatar";
-import ArgonBadge from "components/ArgonBadge";
 
 // Images
 import team2 from "assets/images/team-2.jpg";
+import ButtonDelete from "components/ButtonDelete";
 
 function Author({ image, name, email }) {
   return (
@@ -73,8 +72,7 @@ const authorsTableData = (data, handleDelete, handleOpenEdit) => ({
       action: (
         <ArgonTypography>
           <ArgonTypography
-            component="a"
-            href="#"
+            component="button"
             variant="caption"
             color="primary"
             fontWeight="medium"
@@ -82,16 +80,10 @@ const authorsTableData = (data, handleDelete, handleOpenEdit) => ({
           >
             Sửa
           </ArgonTypography>
-          <ArgonTypography
-            component="a"
-            variant="caption"
-            color="#ff0000"
-            fontWeight="medium"
-            ml={2}
-            onClick={() => handleDelete([dt._id])}
-          >
-            Xóa
-          </ArgonTypography>
+          <ButtonDelete
+            handleDelete={() => handleDelete([dt._id])}
+            content="Bạn có chắc chắn xóa thành viên này"
+          />
         </ArgonTypography>
       ),
     };
